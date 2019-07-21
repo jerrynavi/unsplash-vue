@@ -9,8 +9,7 @@
       </div>
     </div>
     
-    <div v-show="hasLoaded">
-      <div class="grid-area images px-10 md:px-15 lg:px-24 my-5">
+      <div class="mx-auto my-5 images" v-masonry gutter="20" transition-duration="0.3s" item-selector=".photo-card">
         <PhotoCard v-for="photo of photos" :key="photo.id"
           :imageSrc="photo.urls.regular"
           :author="photo.user.name"
@@ -18,11 +17,10 @@
           :imageDesc="photo.description"
         />
       </div>
-    </div>
 
     <div v-show="isLoading">
       <div class="grid-area">
-        <facebook-loader v-for="i of [0,1,2,3,4,5]" :key="i" class="max-w-sm rounded overflow-hidden shadow-lg relative"></facebook-loader>
+        <LoadingCard v-for="i of [0,1,2,3,4,5]" :key="i" class="max-w-sm rounded overflow-hidden shadow-lg relative"></LoadingCard>
       </div>
     </div>
   </div>
@@ -30,27 +28,24 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { FacebookLoader } from 'vue-content-loader';
 import PhotoCard from '../components/PhotoCard.vue';
+import LoadingCard from '../components/LoadingCard.vue';
 import { IPhoto } from '../interfaces/IPhoto';
 import axios from 'axios';
 import { UNSPLASH_API_KEY } from '../constants';
 @Component({
   components: {
     PhotoCard,
-    FacebookLoader,
+    LoadingCard,
   },
 })
 export default class Home extends Vue {
-  public hasLoaded: boolean = false;
-  public isLoading: boolean = false;
   public photos: IPhoto[] = [];
   constructor() {
     super();
     this.getPhotos('african');
   }
   public getPhotos = async (query: string) => {
-    this.isLoading = true;
     const API_URL: string = 'https://api.unsplash.com';
     try {
       const res = await axios.get(
@@ -58,8 +53,6 @@ export default class Home extends Vue {
       );
       this.photos.length = 0;
       this.photos.push(...res.data.results);
-      this.hasLoaded = true;
-      this.isLoading = false;
     } catch (error) {
       throw Error('An error occurred: \r' + error);
     }
@@ -88,35 +81,25 @@ export default class Home extends Vue {
     }
   }
 
-  .grid-area {
-    display: grid;
-    grid-template-rows: repeat(3, minmax(auto, 1fr));
-    grid-template-columns: repeat(3, minmax(auto, 1fr));
-    justify-items: center;
-    gap: 1em;
-    &.images {
-      margin-top: -40px;
-    }
+  .images {
+    margin-top: -40px;
+    max-width: 1200px;
   }
   @media screen and (max-width: 767px) {
-    .grid-area {
-      display: grid;
-      grid-template-rows: repeat(2, minmax(auto, 1fr));
-      grid-template-columns: repeat(2, minmax(auto, 1fr));
-      &.images {
-        margin-top: -20px;
-      }
+    .images {
+      margin-top: -20px;
+      padding-left: 20px;
     }
   }
   @media screen and (max-width: 360px) {
-    .grid-area {
-      display: grid;
-      grid-template-rows: auto;
-      grid-template-columns: auto;
-      &.images {
-        margin-top: 1.25rem;
+    .images {
+      margin-top: -1.25rem;
+      padding-left: 1.25rem;
+      .photo-card {
+        max-width: 300px;
       }
     }
   }
+
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-sm rounded overflow-hidden shadow-lg relative">
+  <div v-masonry-tile class="max-w-sm rounded overflow-hidden shadow-lg relative photo-card mb-5">
     <img class="w-full object-cover h-full" :src="imageSrc" :alt="imageDesc">
 
     <div class="details w-full p-3 pb-6 text-white text-left">
