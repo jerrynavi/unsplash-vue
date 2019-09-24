@@ -16,7 +16,7 @@ export default class LoadingCard extends Vue {}
 </script>
 
 
-<style lang="scss" scoped>
+<style lang="scss">
   .grid-area {
     display: grid;
     grid-template-rows: repeat(3, minmax(auto, 1fr));
